@@ -32,7 +32,6 @@ exports.createProduct = (req, res, next) => {
                     error: 'Image must be less than 1 MB'
                 });
             }
-            console.log("hello");
             console.log(files);
             product.image.data = fs.readFileSync(files.image.path);
             product.image.contentType = files.image.type;
@@ -303,4 +302,32 @@ exports.listSearch = (req, res) => {
             products: products
         });
     }).select("-image")
+}
+
+exports.decreaseQuantity = (req, res, next) => {
+    let bulkOptions = req.body.order.products.map(prod => {
+        console.log(JSON.stringify(prod));
+        return {
+            updateOne: {
+                filter: {
+                    _id: prod.item._id
+                },
+                update: {
+                    $inc: {
+                        quantity: -prod.count,
+                        sold: +prod.count
+                    }
+                }
+            }
+        }
+    });
+
+    Product.bulkWrite(bulkOptions, null, (error, products) => {
+        if (error) {
+            return res.status(400).json({
+                error: "Unable to update quantity"
+            });
+        }
+        next();
+    })
 }

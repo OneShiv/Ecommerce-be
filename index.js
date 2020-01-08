@@ -10,7 +10,7 @@ const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
-
+const orderRoute = require('./routes/order');
 const app = express();
 
 // database connection
@@ -23,7 +23,6 @@ mongoose.connect(process.env.DATABASE, {
 });
 app.use(cors());
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cookieParser());
@@ -33,6 +32,7 @@ app.use('/api', authRoute);
 app.use('/api', userRoute);
 app.use('/api', categoryRoute);
 app.use('/api', productRoute);
+app.use('/api', orderRoute);
 
 app.get('/', (req, res) => {
     res.send({ express: 'Hello From Express' });
