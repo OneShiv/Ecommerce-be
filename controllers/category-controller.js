@@ -6,7 +6,7 @@ exports.createCategory = (req, res, next) => {
     category.save((err, data) => {
         if (err || !data) {
             return res.status(400).json({
-                error: errorHandler(err)
+                error: !req.body.name ? "No empty category name allowed" : errorHandler(err)
             })
         }
         res.json({

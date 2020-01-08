@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createProduct, getProduct, readProduct, deleteProduct, updateProduct, readAllProducts, listRelatedProducts, getAllProductByCategory, listBySearch, getProductImage } = require('../controllers/product-controller.js');
+const { createProduct, getProduct, listSearch, readProduct, deleteProduct, updateProduct, readAllProducts, listRelatedProducts, getAllProductByCategory, listBySearch, getProductImage } = require('../controllers/product-controller.js');
 const { isAuth, isAdmin, requireSignin } = require('../controllers/auth-controller.js');
 const { getUser } = require('../controllers/user-controller');
 
@@ -26,6 +26,7 @@ router.param("userId", getUser);
 router.param("productId", getProduct);
 
 router.post("/products/by/search", listBySearch);
+router.get("/products/search", listSearch);
 router.get("/product/image/:productId", getProductImage);
 
 module.exports = router;

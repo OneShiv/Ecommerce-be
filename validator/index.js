@@ -1,4 +1,5 @@
 exports.userSignupValidator = (req, res, next) => {
+    console.log(req.body);
     req.check('name', 'Name is required').notEmpty();
     req.check('email', 'Email is required with minimum lenth of 5 char').matches(/.+@.+\..+/).withMessage("Email must contain @").isLength({
         min: 5,

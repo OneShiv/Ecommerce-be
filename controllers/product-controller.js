@@ -24,7 +24,7 @@ exports.createProduct = (req, res, next) => {
             });
         }
         let product = new Product(fields);
-
+        console.log(files);
         // restricting size of image to be less than 1 mb
         if (files.image) {
             if (files.image.size > 1000000) {
@@ -32,6 +32,8 @@ exports.createProduct = (req, res, next) => {
                     error: 'Image must be less than 1 MB'
                 });
             }
+            console.log("hello");
+            console.log(files);
             product.image.data = fs.readFileSync(files.image.path);
             product.image.contentType = files.image.type;
         }
@@ -267,10 +269,38 @@ exports.listBySearch = (req, res) => {
 
 }
 
-exports.getProductImage = (req, res) => {
+exports.getProductImage = (req, res, next) => {
     if (req.product.image.data) {
         res.set('Content-Type', req.product.image.contentType);
         return res.send(req.product.image.data);
     }
     next();
+}
+
+exports.listSearch = (req, res) => {
+    // create query object to hold search value
+    const query = {};
+    // assign search value to query name
+    if (req.query.name) {
+        query.name = {
+            $regex: req.query.name,
+            $options: 'i'
+        }
+        if (req.query.category && req.query.category !== 'All') {
+            query.category = req.query.category
+        }
+    }
+
+    // to check in db
+
+    Product.find(query, (err, products) => {
+        if (err) {
+            return res.status(400).json({
+                error: 'No Products found'
+            });
+        }
+        return res.json({
+            products: products
+        });
+    }).select("-image")
 }
